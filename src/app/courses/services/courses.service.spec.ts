@@ -8,6 +8,7 @@ import { CoursesService } from './courses.service';
 
 describe('CoursesService', () => {
   let service: CoursesService;
+  let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -15,6 +16,7 @@ describe('CoursesService', () => {
       providers: [CoursesService]
     });
     service = TestBed.inject(CoursesService);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
   it('can load instance', () => {
@@ -22,7 +24,6 @@ describe('CoursesService', () => {
   });
 
   it('should return all courses', () => {
-    const httpTestingController = TestBed.inject(HttpTestingController);
     service.findAllCourses().subscribe(res => {
       expect(res.length).toEqual(12);
     });
@@ -33,7 +34,6 @@ describe('CoursesService', () => {
   });
 
   it('should return a course by id', () => {
-    const httpTestingController = TestBed.inject(HttpTestingController);
     service.findCourseById(12).subscribe(course => {
       expect(course).toBeTruthy();
       expect(course.id).toBe(12);
@@ -41,9 +41,10 @@ describe('CoursesService', () => {
     const req = httpTestingController.expectOne('/api/courses/12');
     expect(req.request.method).toEqual('GET');
     req.flush(COURSES[12]);
-    httpTestingController.verify();
   });
 
-
+  afterEach(() => {
+    httpTestingController.verify();
+  })
 
 });
