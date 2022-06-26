@@ -21,16 +21,29 @@ describe('CoursesService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('findAllCourses', () => {
-    it('should return all courses', () => {
-      const httpTestingController = TestBed.inject(HttpTestingController);
-      service.findAllCourses().subscribe(res => {
-        expect(res.length).toEqual(12);
-      });
-      const req = httpTestingController.expectOne('/api/courses');
-      expect(req.request.method).toEqual('GET');
-      req.flush({ payload: Object.values(COURSES) });
-      httpTestingController.verify();
+  it('should return all courses', () => {
+    const httpTestingController = TestBed.inject(HttpTestingController);
+    service.findAllCourses().subscribe(res => {
+      expect(res.length).toEqual(12);
     });
+    const req = httpTestingController.expectOne('/api/courses');
+    expect(req.request.method).toEqual('GET');
+    req.flush({ payload: Object.values(COURSES) });
+    httpTestingController.verify();
   });
+
+  it('should return a course by id', () => {
+    const httpTestingController = TestBed.inject(HttpTestingController);
+    service.findCourseById(12).subscribe(course => {
+      expect(course).toBeTruthy();
+      expect(course.id).toBe(12);
+    });
+    const req = httpTestingController.expectOne('/api/courses/12');
+    expect(req.request.method).toEqual('GET');
+    req.flush(COURSES[12]);
+    httpTestingController.verify();
+  });
+
+
+
 });
